@@ -1,0 +1,43 @@
+﻿@page
+@model WebForm.Pages.Shared.QuanLyTour_ThemModel
+@{
+    ViewData["Title"] = "Website Quản Lý Tour";
+    Layout = "_Layout";
+}
+@using BUS;
+@{
+    TourBUS bus = new TourBUS();
+}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Thêm Tour</h4>
+                        <form class="forms-sample" method="post">
+                            <div class="form-group">
+                                <label for="exampleInputName1">Mã Tour</label>
+                                <input type="text" asp-for="tour.Id_Tour" value="@bus.MakeID()" class="form-control" placeholder="Mã Tour" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Tên Tour</label>
+                                <input type="text" asp-for="tour.Ten_Tour" required class="form-control" placeholder="Tên Tour">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Đặc điểm</label>
+                                <input type="text" asp-for="tour.Dacdiem_Tour"  required class="form-control" placeholder="Đặc điểm">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Mã Loại</label>
+                                <select class="form-control" asp-for="tour.Id_Loai" asp-items="@(new SelectList(Model.listloai,"Id_Loai", "Ten_Loai"))">
+                                </select>
+                            </div>
+                            <input type="submit" asp-page-handler="Add" value="Thêm" class="btn btn-primary mr-2" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

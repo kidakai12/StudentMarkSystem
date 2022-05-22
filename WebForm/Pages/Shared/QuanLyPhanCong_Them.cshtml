@@ -1,0 +1,42 @@
+﻿@page
+@model WebForm.Pages.Shared.QuanLyPhanCong_ThemModel
+@{
+    ViewData["Title"] = "Website Quản Lý Tour";
+    Layout = "_Layout";
+}
+@using BUS;
+@{
+    PhanCongBUS bus = new PhanCongBUS();
+}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Thêm Phân Công</h4>
+                        <form class="forms-sample" method="post">
+                            <div class="form-group">
+                                <label for="exampleInputName1">Mã Đoàn</label>
+                                <select asp-for="phancong.Id_Doan" class="form-control" asp-items="@(new SelectList(Model.listdoan,"Id_Doan", "Ten_Doan"))">
+                                    
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Mã Nhân Viên</label>
+                                <select asp-for="phancong.Id_NV" class="form-control" asp-items="@(new SelectList(Model.listnv,"Id_NV", "Hoten_NV"))">
+                                    
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Nhiệm vụ</label>
+                                <input type="text" class="form-control" required asp-for="phancong.Nhiemvu" placeholder="Nhiệm vụ">
+                            </div>
+                            <input type="submit" value="Thêm" asp-page-handler="add" class="btn btn-primary mr-2" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,32 @@
+﻿@page
+@model WebForm.Pages.Shared.QuanLyChiTietTour_ThemModel
+@{
+    ViewData["Title"] = "Website Quản Lý Tour";
+    Layout = "_Layout";
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Thêm Chi Tiết Tour</h4>
+                        <form class="forms-sample" method="post">
+                            <div class="form-group">
+                                <label>Địa Điểm</label>
+                                <select asp-for="tour.Id_DiaDiem" class="form-control" asp-items="@(new SelectList(Model.listdiadiem,"Id_DiaDiem", "Ten_DiaDiem"))">
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Thứ tự</label>
+                                <input type="number" asp-for="tour.Thutu" required min="1" max="10"  class="form-control" placeholder="Thứ tự">
+                            </div>
+                            <input type="submit" asp-page-handler="add" value="Thêm" class="btn btn-primary mr-2">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

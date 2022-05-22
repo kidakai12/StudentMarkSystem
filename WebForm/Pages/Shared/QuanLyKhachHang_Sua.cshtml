@@ -1,0 +1,62 @@
+﻿@page
+@model WebForm.Pages.Shared.QuanLyKhachHang_SuaModel
+@{
+    ViewData["Title"] = "Website Quản Lý Tour";
+    Layout = "_Layout";
+}
+@using Microsoft.AspNetCore.Http;
+@using Newtonsoft.Json;
+@using DTO;
+@{
+    var str = HttpContext.Session.GetString("editkhachhang");
+    var obj = JsonConvert.DeserializeObject<KhachDTO>(str);
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Sửa Khách Hàng</h4>
+                        <form class="forms-sample" method="post">
+                            <div class="form-group">
+                                <label for="exampleInputName1">Mã Khách hàng</label>
+                                <input type="text" class="form-control" asp-for="khachhang.Id_Khach" value="@obj.Id_Khach" placeholder="Mã Khách hàng" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Họ tên</label>
+                                <input type="text" class="form-control" required asp-for="khachhang.Hoten_Khach" value="@obj.Hoten_Khach" placeholder="Họ tên">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">CMND</label>
+                                <input type="text" class="form-control" required asp-for="khachhang.Cmnd_Khach" value="@obj.Cmnd_Khach" placeholder="CMND">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Địa Chỉ</label>
+                                <input type="text" class="form-control" required asp-for="khachhang.Diachi_Khach" value="@obj.Diachi_Khach" placeholder="Địa Chỉ">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Giới tính</label>
+                                <select class="form-control" asp-for="khachhang.Gioitinh_Khach">
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Số điện thoại</label>
+                                <input type="text" class="form-control" required min="1000000000" asp-for="khachhang.Sdt_Khach" value="@obj.Sdt_Khach" placeholder="Số điện thoại">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Quốc tịch</label>
+                                <input type="text" class="form-control" required asp-for="khachhang.Quoctich" value="@obj.Quoctich" placeholder="Quốc tịch">
+                            </div>
+                            
+                            <input type="submit" value="Sửa" asp-page-handler="AddKhachHang" class="btn btn-primary mr-2" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

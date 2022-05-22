@@ -1,0 +1,45 @@
+﻿@page
+@model WebForm.Pages.Shared.QuanLyPhanCong_SuaModel
+@{
+    ViewData["Title"] = "Website Quản Lý Tour";
+    Layout = "_Layout";
+}
+@using Microsoft.AspNetCore.Http;
+@using Newtonsoft.Json;
+@using DTO;
+@{
+    var str = HttpContext.Session.GetString("editphancong");
+    var obj = JsonConvert.DeserializeObject<PhanCongDTO>(str);
+}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Sửa Phân Công</h4>
+                        <form class="forms-sample" method="post">
+                            <div class="form-group">
+                                <label for="exampleInputName1">Mã Đoàn</label>
+                                <select asp-for="iddoan" class="form-control" asp-items="@(new SelectList(Model.listdoan,"Id_Doan", "Id_Doan"))">
+                                </select>
+                                <input type="hidden"  asp-for="phancong.Id_Doan" value="@obj.Id_Doan"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Mã Nhân Viên</label>
+                                <select asp-for="idnv" class="form-control" asp-items="@(new SelectList(Model.listnv,"Id_NV", "Id_NV"))">
+                                </select>
+                                <input type="hidden" asp-for="phancong.Id_NV" value="@obj.Id_NV" />
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Nhiệm vụ</label>
+                                <input type="text" class="form-control" required value="@obj.Nhiemvu" asp-for="phancong.Nhiemvu" placeholder="Nhiệm vụ">
+                            </div>
+                            <input type="submit" value="Sửa" asp-page-handler="edit" class="btn btn-primary mr-2" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

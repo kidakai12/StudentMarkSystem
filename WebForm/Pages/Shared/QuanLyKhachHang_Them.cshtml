@@ -1,0 +1,62 @@
+﻿@page
+@model WebForm.Pages.Shared.QuanLyKhachHang_ThemModel
+@{
+    ViewData["Title"] = "Website Quản Lý Tour";
+    Layout = "_Layout";
+}
+@using BUS;
+@{
+    KhachHangBUS bus = new KhachHangBUS();
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Thêm Khách Hàng</h4>
+                        <form class="forms-sample" method="post">
+                            <div class="form-group">
+                                <label for="exampleInputName1">Mã Khách hàng</label>
+                                <input type="text" class="form-control" value="@bus.MakeID()" asp-for="khachhang.Id_Khach" placeholder="Mã Khách hàng" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Họ tên</label>
+                                <input type="text" class="form-control" required asp-for="khachhang.Hoten_Khach" placeholder="Họ tên">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">CMND</label>
+                                <input type="text" class="form-control" required asp-for="khachhang.Cmnd_Khach" placeholder="CMND">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Địa Chỉ</label>
+                                <input type="text" class="form-control" required asp-for="khachhang.Diachi_Khach" placeholder="Địa Chỉ">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Giới tính</label>
+                                <select class="form-control" asp-for="khachhang.Gioitinh_Khach">
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Số điện thoại</label>
+                                <input type="number" class="form-control" required min="1000000000" asp-for="khachhang.Sdt_Khach" placeholder="Số điện thoại">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Quốc tịch</label>
+                                <input type="text" class="form-control" required asp-for="khachhang.Quoctich" placeholder="Quốc tịch">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Tình trạng</label>
+                                <input type="text" class="form-control" asp-for="khachhang.Tinh_Trang" value="1" placeholder="1" readonly>
+                            </div>
+                            <input type="submit" value="Thêm" asp-page-handler="AddKhachHang" class="btn btn-primary mr-2" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

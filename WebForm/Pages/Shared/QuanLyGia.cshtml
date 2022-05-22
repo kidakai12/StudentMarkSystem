@@ -1,0 +1,157 @@
+﻿@page
+@model WebForm.Pages.Shared.QuanLyGiaModel
+@{
+    ViewData["Title"] = "Website Quản Lý Tour";
+    Layout = "_Layout";
+
+}
+@using BUS;
+@using DTO;
+@using Microsoft.AspNetCore.Http;
+@{
+    List<GiaDTO> list_g = new List<GiaDTO>();
+    GiaBUS bus_g = new GiaBUS();
+    list_g = bus_g.List();
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Danh sách Giá</h4>
+                        @{
+                            try
+                            {
+                                if (HttpContext.Session.GetString("xoagiatour") == "true")
+                                {
+                                    <h5 style="color: green">Xóa thành công</h5>
+                                    HttpContext.Session.Remove("xoagiatour");
+                                }
+
+                                if (HttpContext.Session.GetString("themgiatour") == "true")
+                                {
+                                    <h5 style="color: green">Thêm thành công</h5>
+                                    HttpContext.Session.Remove("themgiatour");
+                                }
+                                else if (HttpContext.Session.GetString("themgiatour") == "false")
+                                {
+                                    <h5 style="color: red">Ngày bắt đầu không được lớn hơn ngày kết thúc</h5>
+                                    HttpContext.Session.Remove("themgiatour");
+                                }
+
+                                if (HttpContext.Session.GetString("suagiatour") == "true")
+                                {
+                                    <h5 style="color: green">Sửa thành công</h5>
+                                    HttpContext.Session.Remove("suagiatour");
+                                }
+                                else if (HttpContext.Session.GetString("suagiatour") == "false")
+                                {
+                                    <h5 style="color: red">Ngày bắt đầu không được lớn hơn ngày kết thúc</h5>
+                                    HttpContext.Session.Remove("suagiatour");
+                                }
+                            }
+                            catch (Exception e) { }
+                        }
+                        <a class="btn btn-primary mb-2" asp-page="/Shared/QuanLyGia_Them">Thêm</a>
+                        <form class="form-inline" method="post">
+                            @{
+                                try
+                                {
+                                    string search = "";
+                                    switch (HttpContext.Session.GetString("searchtype"))
+                                    {
+                                        case "Id_Tour":
+                                            search = HttpContext.Session.GetString("search");
+                                            list_g = list_g.FindAll(x => x.Id_Tour.Contains(search));
+                                            HttpContext.Session.Remove("searchtype");
+                                            HttpContext.Session.Remove("search");
+                                            break;
+                                        case "Gia":
+                                            search = HttpContext.Session.GetString("search");
+                                            list_g = list_g.FindAll(x => x.Gia == search);
+                                            HttpContext.Session.Remove("searchtype");
+                                            HttpContext.Session.Remove("search");
+                                            break;
+                                        case "ngay":
+                                            string dt1 = HttpContext.Session.GetString("dt1");
+                                            string dt2 = HttpContext.Session.GetString("dt2");
+                                            Tool tool = new Tool();
+                                            List<GiaDTO> listtmp = new List<GiaDTO>();
+                                            foreach (GiaDTO item in list_g)
+                                            {
+                                                if (tool.comparedate(item.Thoigianbatdau, dt1) >= 0
+                                                    && tool.comparedate(item.Thoigianketthuc, dt2) <= 0)
+                                                    listtmp.Add(item);
+                                            }
+                                            list_g = listtmp;
+                                            HttpContext.Session.Remove("searchtype");
+                                            HttpContext.Session.Remove("dt1");
+                                            HttpContext.Session.Remove("dt2");
+                                            break;
+                                        default:
+                                            break;
+                                    }
+
+                                }
+                                catch (Exception e) { }
+                            }
+                            <select class="form-control" asp-for="searchtype">
+                                <option value="Id_Tour">Mã Tour</option>
+                                <option value="Gia">Giá</option>
+                            </select>
+                            <input type="text" asp-for="searchvalue" required class="form-control mb-2 mr-sm-2" style="margin-left:" placeholder="Tìm kiếm">
+                            <input type="submit" asp-page-handler="search" class="btn btn-warning" value="Tìm" style="margin-left:">
+                        </form>
+                        <form class="form-inline" method="post">
+                            <input type="date" asp-for="dt1" required class="form-control mb-2 mr-sm-2" style="margin-left:5px" placeholder="Thời gian bắt đầu">
+                            <p>Tới</p>
+                            <input type="date" asp-for="dt2" required class="form-control mb-2 mr-sm-2" style="margin-left:5px" placeholder="Thời gian kết thúc">
+                            <input type="submit" asp-page-handler="searchdate" value="Tìm" class="btn btn-primary mr-2" />
+                        </form>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Mã Giá</th>
+                                        <th>Mã Tour</th>
+                                        <th>Giá</th>
+                                        <th>Thời gian bắt đầu</th>
+                                        <th>Thời gian kết thúc</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (GiaDTO item in list_g)
+                                        {
+                                            <tr>
+                                                <td>@item.Id_Gia</td>
+                                                <td>@item.Id_Tour</td>
+                                                <td>@item.Gia</td>
+                                                <td>@item.Thoigianbatdau</td>
+                                                <td>@item.Thoigianketthuc</td>
+                                                <form asp- method="post">
+                                                <td>
+                                                    <input type="hidden" asp-for="gia.Id_Gia" value="@item.Id_Gia" />
+                                                    <input type="hidden" asp-for="gia.Id_Tour" value="@item.Id_Tour" />
+                                                    <input type="hidden" asp-for="gia.Gia" value="@item.Gia" />
+                                                    <input type="hidden" asp-for="gia.Thoigianbatdau" value="@item.Thoigianbatdau" />
+                                                    <input type="hidden" asp-for="gia.Thoigianketthuc" value="@item.Thoigianketthuc" />
+                                                    <input type="submit" asp-page-handler="edit" value="Sửa" class="btn btn-warning" />
+                                                    <input type="submit" asp-page-handler="delete" value="Xóa" class="btn btn-danger" />
+                                                </td>
+                                                </form>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

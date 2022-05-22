@@ -1,0 +1,39 @@
+﻿@page
+@model WebForm.Pages.Shared.QuanLyChiTietTour_SuaModel
+@{
+    ViewData["Title"] = "Website Quản Lý Tour";
+    Layout = "_Layout";
+}
+@using Microsoft.AspNetCore.Http;
+@using Newtonsoft.Json;
+@using DTO;
+@{
+    var str = HttpContext.Session.GetString("editchitiettour");
+    var obj = JsonConvert.DeserializeObject<ChiTietTourDTO>(str);
+}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Sửa Chi Tiết Tour</h4>
+                        <form class="forms-sample" method="post">
+                            <div class="form-group">
+                                <label>Địa Điểm</label>
+                                <select asp-for="diadiem" class="form-control" asp-items="@(new SelectList(Model.listdiadiem,"Id_DiaDiem", "Ten_DiaDiem"))">
+                                </select>
+                                <input type="hidden" asp-for="tour.Id_DiaDiem" value="@obj.Id_DiaDiem">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Thứ tự</label>
+                                <input type="number" required asp-for="tour.Thutu" value="@obj.Thutu" min="1" max="10" class="form-control" placeholder="Thứ tự">
+                            </div>
+                            <input type="submit" asp-page-handler="edit" value="Sửa" class="btn btn-primary mr-2">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

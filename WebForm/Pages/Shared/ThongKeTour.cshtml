@@ -1,0 +1,69 @@
+﻿@page
+@model WebForm.Pages.Shared.ThongKeChiTietTourModel
+@{
+    ViewData["Title"] = "Website Quản Lý Tour";
+    Layout = "_Layout";
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Thống kê Tour</h4>
+                        <input type="text" class="form-control mb-2 mr-sm-2" style="margin-left:" placeholder="Thời gian bắt đầu">
+                        <input type="text" class="form-control mb-2 mr-sm-2" style="margin-left:" placeholder="Thời gian kết thúc">
+                        <form class="forms-sample" method="post">
+                            <div class="form-group">
+                                <label for="exampleInputName1">Mã Tour</label>
+                                <input type="text" class="form-control" placeholder="Mã Tour" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Tên Tour</label>
+                                <input type="text" class="form-control" placeholder="Tên Tour" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Mô Tả</label>
+                                <input type="text" class="form-control" placeholder="Mô Tả" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Loại Tour</label>
+                                <input type="text" class="form-control" placeholder="Loại Tour" readonly>
+                            </div>
+                            <input type="submit" value="Tìm" class="btn btn-primary mr-2" />
+                            <a class="btn btn-light">Hủy</a>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Mã địa điểm</th>
+                                        <th>Tên địa điểm</th>
+                                        <th>Thứ tự</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Jacob</td>
+                                        <td>53275531</td>
+                                        <td>12 May 2017</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Messsy</td>
+                                        <td>53275532</td>
+                                        <td>15 May 2017</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

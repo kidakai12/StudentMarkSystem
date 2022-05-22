@@ -1,0 +1,34 @@
+﻿@page
+@model WebForm.Pages.Shared.QuanLyDiaDiem_ThemModel
+@{
+    ViewData["Title"] = "Website Quản Lý Tour";
+    Layout = "_Layout";
+}
+@using BUS;
+@{ 
+    DiaDiemBUS bus = new DiaDiemBUS();
+} 
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Thêm Địa Điểm</h4>
+                        <form class="forms-sample" method="post">
+                            <div class="form-group">
+                                <label for="exampleInputName1">Mã Địa Điểm</label>
+                                <input type="text" class="form-control" value="@bus.MakeID()" asp-for="diadiem.Id_DiaDiem" placeholder="Mã Địa Điểm" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Tên Địa Điểm</label>
+                                <input type="text" class="form-control" required asp-for="diadiem.Ten_DiaDiem" placeholder="Tên Địa Điểm">
+                            </div>
+                            <input type="submit" value="Thêm" asp-page-handler="AddDiaDiem" class="btn btn-primary mr-2"/>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

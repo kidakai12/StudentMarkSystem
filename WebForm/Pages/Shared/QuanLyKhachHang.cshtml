@@ -1,0 +1,136 @@
+﻿@page
+@model WebForm.Pages.Shared.QuanLyKhachHangModel
+@{
+    ViewData["Title"] = "Website Quản Lý Tour";
+    Layout = "_Layout";
+
+}
+@using BUS;
+@using DTO;
+@using Microsoft.AspNetCore.Http;
+@{
+    List<KhachDTO> list_kh = new List<KhachDTO>();
+    KhachHangBUS bus_kh = new KhachHangBUS();
+    list_kh = bus_kh.List();
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Danh sách Khách hàng</h4>
+                        @{
+                            try
+                            {
+                                <!---------------------Thông báo Xóa----------------------------------------------->
+                                if (HttpContext.Session.GetString("xoakhachhang") == "true")
+                                {
+                                    <h5 style="color: green">Xóa thành công</h5>
+                                    HttpContext.Session.Remove("xoakhachhang");
+                                }
+                                <!---------------------Thông báo Thêm----------------------------------------------->
+                                if (HttpContext.Session.GetString("themkhachhang") == "true")
+                                {
+                                    <h5 style="color: green">Thêm thành công</h5>
+                                    HttpContext.Session.Remove("themkhachhang");
+                                }
+                                <!---------------------Thông báo Sửa----------------------------------------------->
+                                if (HttpContext.Session.GetString("suakhachhang") == "true")
+                                {
+                                    <h5 style="color: green">Sửa thành công</h5>
+                                    HttpContext.Session.Remove("suakhachhang");
+                                }
+                            }
+                            catch (Exception e) { }
+                        }
+                        <a class="btn btn-primary mb-2" asp-page="/Shared/QuanLyKhachHang_Them">Thêm</a>
+                        <form class="form-inline" method="post">
+                            @{
+                                string search = HttpContext.Session.GetString("search");
+                                try
+                                {
+                                    switch (HttpContext.Session.GetString("searchtype"))
+                                    {
+                                        case "Id_Khach":
+                                            list_kh = list_kh.FindAll(x => x.Id_Khach.Contains(search));
+                                            break;
+                                        case "Hoten_Khach":
+                                            list_kh = list_kh.FindAll(x => x.Hoten_Khach.Contains(search));
+                                            break;
+                                        case "Cmnd_Khach":
+                                            list_kh = list_kh.FindAll(x => x.Cmnd_Khach.Contains(search));
+                                            break;
+                                        case "Sdt_Khach":
+                                            list_kh = list_kh.FindAll(x => x.Sdt_Khach.Contains(search));
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                                catch (Exception e) { }
+                                HttpContext.Session.Remove("searchtype");
+                                HttpContext.Session.Remove("search");
+                            }
+                            <select class="form-control" asp-for="searchtype">
+                                <option value="Id_Khach">Mã Khách</option>
+                                <option value="Hoten_Khach">Họ tên</option>
+                                <option value="Cmnd_Khach">CMND</option>
+                                <option value="Sdt_Khach">Số điện thoại</option>
+                            </select>
+                            <input type="text" asp-for="searchvalue" required class="form-control mb-2 mr-sm-2" style="margin-left:" placeholder="Tìm kiếm">
+                            <input type="submit" asp-page-handler="search" class="btn btn-warning" value="Tìm" style="margin-left:">
+                        </form>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Mã khách</th>
+                                        <th>Họ tên</th>
+                                        <th>CMND</th>
+                                        <th>Địa Chỉ</th>
+                                        <th>Giới Tính</th>
+                                        <th>Số điện thoại</th>
+                                        <th>Quốc Tịch</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (KhachDTO item in list_kh)
+                                        {
+                                            <tr>
+                                                <td>@item.Id_Khach</td>
+                                                <td>@item.Hoten_Khach</td>
+                                                <td>@item.Cmnd_Khach</td>
+                                                <td>@item.Diachi_Khach</td>
+                                                <td>@item.Gioitinh_Khach</td>
+                                                <td>@item.Sdt_Khach</td>
+                                                <td>@item.Quoctich</td>
+                                                <form asp- method="post">
+                                                    <td>
+                                                        <input type="hidden" asp-for="khachhang.Id_Khach" value="@item.Id_Khach" />
+                                                        <input type="hidden" asp-for="khachhang.Hoten_Khach" value="@item.Hoten_Khach" />
+                                                        <input type="hidden" asp-for="khachhang.Cmnd_Khach" value="@item.Cmnd_Khach" />
+                                                        <input type="hidden" asp-for="khachhang.Diachi_Khach" value="@item.Diachi_Khach" />
+                                                        <input type="hidden" asp-for="khachhang.Gioitinh_Khach" value="@item.Gioitinh_Khach" />
+                                                        <input type="hidden" asp-for="khachhang.Sdt_Khach" value="@item.Sdt_Khach" />
+                                                        <input type="hidden" asp-for="khachhang.Quoctich" value="@item.Quoctich" />
+                                                        <input type="submit" asp-page-handler="edit" value="Sửa" class="btn btn-warning" />
+                                                        <input type="submit" asp-page-handler="delete" value="Xóa" class="btn btn-danger" />
+                                                    </td>
+                                                </form>
+                                            </tr>
+                                        }
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

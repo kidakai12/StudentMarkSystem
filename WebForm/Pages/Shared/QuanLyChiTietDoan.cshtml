@@ -1,0 +1,131 @@
+﻿@page
+@model WebForm.Pages.Shared.QuanLyChiTietDoanModel
+@{
+    ViewData["Title"] = "Website Quản Lý Tour";
+    Layout = "_Layout";
+}
+@using BUS;
+@using DTO;
+@using Microsoft.AspNetCore.Http;
+@using Newtonsoft.Json; 
+@{
+    string iddoan = HttpContext.Session.GetString("chitietdoan");
+
+    List<ChiTietDoanDTO> list = new ChiTietDoanBUS().List(iddoan);
+
+    List<ChiPhiDTO> listchiphi = new ChiPhiBUS().List(iddoan);
+
+    List<LoaiChiPhiDTO> listloai = new LoaiChiPhiBUS().List();
+
+    List<KhachDTO> listkhach = new KhachHangBUS().List();
+}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Danh sách chi tiết Đoàn</h4>
+                        @{
+                            try
+                            {
+                                <!---------------------Thông báo Xóa----------------------------------------------->
+                                if (HttpContext.Session.GetString("xoachitietdoan") == "true")
+                                {
+                                    <h5 style="color:green">Xóa thành công</h5>
+                                    HttpContext.Session.Remove("xoachitietdoan");
+                                }
+                                <!---------------------Thông báo Thêm----------------------------------------------->
+                                if (HttpContext.Session.GetString("themchitietdoan") == "true")
+                                {
+                                    <h5 style="color: green">Thêm thành công</h5>
+                                    HttpContext.Session.Remove("themchitietdoan");
+                                }
+                                else if (HttpContext.Session.GetString("themchitietdoan") == "false")
+                                {
+                                    <h5 style="color:red">Khách này đã có trong đoàn</h5>
+                                    HttpContext.Session.Remove("themchitietdoan");
+                                }
+                            }
+                            catch (Exception e) { }
+                        }
+                        <a class="btn btn-primary mb-2" asp-page="/Shared/QuanLyChiTietDoan_Them">Thêm</a>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã khách hàng</th>
+                                        <th>Họ tên</th>
+                                        <th>CMND</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (ChiTietDoanDTO item in list)
+                                        {
+                                            string tenkhach = listkhach.Find(x => x.Id_Khach.Equals(item.Id_Khach)).Hoten_Khach;
+                                            string cmndkhach = listkhach.Find(x => x.Id_Khach.Equals(item.Id_Khach)).Cmnd_Khach;
+                                            <tr>
+                                                <td>@item.Id_Khach</td>
+                                                <td>@tenkhach</td>
+                                                <td>@cmndkhach</td>
+                                                <td>
+                                                    <form method="post">
+                                                        <input type="hidden" asp-for="chitiet.Id_Doan" value="@item.Id_Doan" />
+                                                        <input type="hidden" asp-for="chitiet.Id_Khach" value="@item.Id_Khach" />
+                                                        <input type="submit" asp-page-handler="delete" value="Xóa" class="btn btn-danger" />
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Danh sách Chi phí</h4>
+                        <a class="btn btn-primary mb-2" asp-page="/Shared/QuanLyChiPhi_Them">Thêm</a>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Loại Chi Phí</th>
+                                        <th>Giá</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (ChiPhiDTO item in listchiphi)
+                                        {
+                                            string tenchiphi = listloai.Find(x => x.Id_LoaiChiPhi.Equals(item.Id_LoaiChiPhi)).Ten_LoaiChiPhi;
+                                            <tr>
+                                                <td>@tenchiphi</td>
+                                                <td>@item.Gia.ToString("#,#") VNĐ</td>
+                                                <td>
+                                                    <form method="post">
+                                                        <input type="hidden" asp-for="chiphi.Id_Doan" value="@item.Id_Doan" />
+                                                        <input type="hidden" asp-for="chiphi.Id_LoaiChiPhi" value="@item.Id_LoaiChiPhi" />
+                                                        <input type="hidden" asp-for="chiphi.Gia" value="@item.Gia" />
+                                                        <input type="submit" asp-page-handler="edit2" value="Sửa" class="btn btn-warning" />
+                                                        <input type="submit" asp-page-handler="delete2" value="Xóa" class="btn btn-danger" />
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

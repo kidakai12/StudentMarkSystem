@@ -1,0 +1,125 @@
+﻿@page
+@model WebForm.Pages.Pages.QuanLyTourModel
+@{
+    ViewData["Title"] = "Website Quản Lý Tour";
+    Layout = "_Layout";
+
+}
+@using BUS;
+@using DTO;
+@using Microsoft.AspNetCore.Http;
+@{
+    List<TourDTO> list = new List<TourDTO>();
+    List<LoaiTourDTO> listloai = new List<LoaiTourDTO>();
+    TourBUS bus = new TourBUS();
+    LoaiTourBUS busloai = new LoaiTourBUS();
+    list = bus.List().FindAll(x => x.Tinh_Trang.Equals(1));
+    listloai = busloai.List();
+}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Danh sách Tour</h4>
+                        @{
+                            try
+                            {
+                                <!---------------------Thông báo Xóa----------------------------------------------->
+                                if (HttpContext.Session.GetString("xoatour") == "true")
+                                {
+                                    <h4 style="color: green">Xóa thành công</h4>
+                                    HttpContext.Session.Remove("xoatour");
+                                }
+                                <!---------------------Thông báo Thêm----------------------------------------------->
+                                if (HttpContext.Session.GetString("themtour") == "true")
+                                {
+                                    <h4 style="color: green">Thêm thành công</h4>
+                                    HttpContext.Session.Remove("themtour");
+                                }
+                                <!---------------------Thông báo Sửa----------------------------------------------->
+                                if (HttpContext.Session.GetString("suatour") == "true")
+                                {
+                                    <h4 style="color: green">Sửa thành công</h4>
+                                    HttpContext.Session.Remove("suatour");
+                                }
+
+                            }
+                            catch (Exception e) { }
+                        }
+                        <a class="btn btn-primary mb-2" asp-page="/Shared/QuanLyTour_Them">Thêm</a>
+                        <form class="form-inline" method="post">
+                            @{
+                                string search = HttpContext.Session.GetString("search");
+                                try
+                                {
+                                    switch (HttpContext.Session.GetString("searchtype"))
+                                    {
+                                        case "Id_Tour":
+                                            list = list.FindAll(x => x.Id_Tour.Contains(search));
+                                            break;
+                                        case "Ten_Tour":
+                                            list = list.FindAll(x => x.Ten_Tour.Contains(search));
+                                            break;
+                                        default:
+                                            break;
+                                    }
+
+                                }
+                                catch (Exception e) { }
+                                HttpContext.Session.Remove("searchtype");
+                                HttpContext.Session.Remove("search");
+                            }
+                            <select class="form-control" asp-for="searchtype">
+                                <option value="Id_Tour">Mã Tour</option>
+                                <option value="Ten_Tour">Tên Tour</option>
+                            </select>
+                            <input type="text" asp-for="searchvalue" class="form-control mb-2 mr-sm-2" style="margin-left:" placeholder="Tìm kiếm" required>
+                            <input type="submit" asp-page-handler="search" class="btn btn-warning" value="Tìm" style="margin-left:">
+                        </form>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Mã Tour</th>
+                                        <th>Tên Tour</th>
+                                        <th>Mô Tả</th>
+                                        <th>Loại Tour</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (TourDTO item in list)
+                                        {
+                                            string tenloai = listloai.Find(x => x.Id_Loai.Equals(item.Id_Loai)).Ten_Loai;
+                                            <tr>
+                                                <td>@item.Id_Tour</td>
+                                                <td>@item.Ten_Tour</td>
+                                                <td>@item.Dacdiem_Tour</td>
+                                                <td>@tenloai</td>
+                                                <td>
+                                                    <form method="post">
+                                                        <input type="hidden" asp-for="tour.Id_Tour" value="@item.Id_Tour" />
+                                                        <input type="hidden" asp-for="tour.Ten_Tour" value="@item.Ten_Tour" />
+                                                        <input type="hidden" asp-for="tour.Dacdiem_Tour" value="@item.Dacdiem_Tour" />
+                                                        <input type="hidden" asp-for="tour.Id_Loai" value="@item.Id_Loai" />
+                                                        <input type="submit" asp-page-handler="edit" value="Sửa" class="btn btn-warning" />
+                                                        <input type="submit" asp-page-handler="delete" value="Xóa" class="btn btn-danger" />
+                                                        <input type="submit" asp-page-handler="detail" value="Chi tiết" class="btn btn-primary" />
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

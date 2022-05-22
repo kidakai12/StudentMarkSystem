@@ -1,0 +1,52 @@
+﻿@page
+@model WebForm.Pages.Shared.QuanLyDoan_ThemModel
+@{
+    ViewData["Title"] = "Website Quản Lý Tour";
+    Layout = "_Layout";
+}
+@using BUS;
+@{
+    DoanDuLichBUS bus = new DoanDuLichBUS();
+}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Thêm Đoàn</h4>
+                        <form class="forms-sample" method="post">
+                            <div class="form-group" >
+                                <label for="exampleInputName1">Mã Đoàn</label>
+                                <input type="text" asp-for="doan.Id_Doan" required value="@bus.MakeID()" class="form-control" placeholder="Mã Đoàn" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Tên Đoàn</label>
+                                <input type="text" asp-for="doan.Ten_Doan" required class="form-control" placeholder="Tên Đoàn">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Tên Tour</label>
+                                <select class="form-control" 
+                                        asp-for="doan.Id_Tour" asp-items="@(new SelectList(Model.listtour,"Id_Tour", "Ten_Tour"))" >
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Ngày khởi hành</label>
+                                <input type="date" asp-for="doan.Ngaykhoihanh" required class="form-control" placeholder="Ngày khởi hành">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Ngày kết thúc</label>
+                                <input type="date" asp-for="doan.Ngayketthuc" required class="form-control" placeholder="Ngày kết thúc">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Nội dung</label>
+                                <textarea type="text" class="form-control" required asp-for="doan.Noidung" id="exampleTextarea1" rows="4" placeholder="Nội dung Đoàn"></textarea>
+                            </div>
+                            <input type="submit" asp-page-handler="Add" value="Thêm" class="btn btn-primary mr-2" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

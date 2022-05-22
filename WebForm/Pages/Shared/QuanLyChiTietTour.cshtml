@@ -1,0 +1,169 @@
+﻿@page
+@model WebForm.Pages.Shared.QuanLyChiTietTourModel
+@{
+    ViewData["Title"] = "Website Quản Lý Tour";
+    Layout = "_Layout";
+}
+@using BUS;
+@using DTO;
+@using Microsoft.AspNetCore.Http;
+@{
+    string idtour = HttpContext.Session.GetString("chitiettour");
+    List<ChiTietTourDTO> list = new ChiTietTourBUS().List(idtour);
+    List<DiaDiemDTO> listdiadiem = new DiaDiemBUS().List();
+
+}   
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Danh sách chi tiết Tour</h4>
+                        @{
+                            try
+                            {
+                                <!---------------------Thông báo Xóa----------------------------------------------->
+                                if (HttpContext.Session.GetString("xoachitiettour") == "true")
+                                {
+                                    <h4 style="color: green">Xóa thành công</h4>
+                                    HttpContext.Session.Remove("xoachitiettour");
+                                }
+                                <!---------------------Thông báo Thêm----------------------------------------------->
+                                if (HttpContext.Session.GetString("themchitiettour") == "true")
+                                {
+                                    <h4 style="color: green">Thêm thành công</h4>
+                                    HttpContext.Session.Remove("themchitiettour");
+                                }
+                                else if (HttpContext.Session.GetString("themchitiettour") == "false")
+                                {
+                                    <h4 style="color: red">Trùng địa điểm</h4>
+                                    HttpContext.Session.Remove("themchitiettour");
+                                }
+                                <!---------------------Thông báo Sửa----------------------------------------------->
+                                if (HttpContext.Session.GetString("suachitiettour") == "true")
+                                {
+                                    <h4 style="color: green">Sửa thành công</h4>
+                                    HttpContext.Session.Remove("suachitiettour");
+                                }
+                                else if (HttpContext.Session.GetString("suachitiettour") == "false")
+                                {
+                                    <h4 style="color: red">Trùng địa điểm</h4>
+                                    HttpContext.Session.Remove("suachitiettour");
+                                }
+
+                            }
+                            catch (Exception e) { }
+                        }
+                        <a class="btn btn-primary mb-2" asp-page="/Shared/QuanLyChiTietTour_Them">Thêm</a>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã địa điểm</th>
+                                        <th>Tên địa điểm</th>
+                                        <th>Thứ tự</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{ foreach (ChiTietTourDTO item in list)
+                                        {
+                                            string tendiadiem = listdiadiem.Find(x => x.Id_DiaDiem.Equals(item.Id_DiaDiem)).Ten_DiaDiem;
+                                            <tr>
+                                                <td>@item.Id_DiaDiem</td>
+                                                <td>@tendiadiem</td>
+                                                <td>@item.Thutu</td>
+                                                <td>
+                                                    <form method="post">
+                                                        <input type="hidden" asp-for="chitiet.Id_DiaDiem" value="@item.Id_DiaDiem" />
+                                                        <input type="hidden" asp-for="chitiet.Id_Tour" value="@item.Id_Tour" />
+                                                        <input type="hidden" asp-for="chitiet.Id_DiaDiem" value="@item.Id_DiaDiem" />
+                                                        <input type="hidden" asp-for="chitiet.Thutu" value="@item.Thutu" />
+                                                        <input type="submit" asp-page-handler="edit" value="Sửa" class="btn btn-warning" />
+                                                        <input type="submit" asp-page-handler="delete" value="Xóa" class="btn btn-danger" />
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @{
+                string khachsan = "0 VNĐ";
+                string anuong = "0 VNĐ";
+                string phuongtien = "0 VNĐ";
+                string sodoan = "0";
+                string doanhso = "0 VNĐ";
+                string tong = "0 VNĐ";
+                try
+                {
+                    if (HttpContext.Session.GetString("thongketimkiem") == "thanhcong")
+                    {
+                        khachsan = long.Parse(HttpContext.Session.GetString("khachsan")).ToString("#,#")+ "VNĐ";
+                        anuong = long.Parse(HttpContext.Session.GetString("anuong")).ToString("#,#") + "VNĐ";
+                        phuongtien = long.Parse(HttpContext.Session.GetString("phuongtien")).ToString("#,#") + "VNĐ";
+                        sodoan = HttpContext.Session.GetString("sodoan");
+                        doanhso = long.Parse(HttpContext.Session.GetString("doanhso")).ToString("#,#") + "VNĐ";
+                        tong = long.Parse(HttpContext.Session.GetString("tong")).ToString("#,#") + "VNĐ";
+
+                        HttpContext.Session.Remove("thongketimkiem");
+                        HttpContext.Session.Remove("khachsan");
+                        HttpContext.Session.Remove("anuong");
+                        HttpContext.Session.Remove("phuongtien");
+                        HttpContext.Session.Remove("sodoan");
+                        HttpContext.Session.Remove("doanhso");
+                        HttpContext.Session.Remove("tong");
+                    }
+                }
+                catch (Exception e)
+                {
+
+                }
+
+
+
+            }
+            <div class="col-lg-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Thống kê Tour</h4>
+                        <form class="forms-sample" method="post">
+                            <input type="date" asp-for="search1" required class="form-control mb-2 mr-sm-2" style="margin-left:" placeholder="Thời gian bắt đầu">
+                            <input type="date" asp-for="search2" required class="form-control mb-2 mr-sm-2" style="margin-left:" placeholder="Thời gian kết thúc">
+                            <input type="submit" asp-page-handler="tong" value="Tìm" class="btn btn-primary mr-2" />
+                            <div class="form-group">
+                                <label for="exampleInputName1">Chi Phí Khách Sạn</label>
+                                <input type="text" asp-for="khachsan" value="@khachsan" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Ăn Uống</label>
+                                <input type="text" asp-for="anuong" value="@anuong" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Phương Tiện</label>
+                                <input type="text" asp-for="phuongtien" value="@phuongtien" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Doanh số</label>
+                                <input type="text" asp-for="doanhso" value="@doanhso" class="form-control" placeholder="Loại Tour" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Số Đoàn Tham Gia</label>
+                                <input type="text" asp-for="sodoan" value="@sodoan" class="form-control" placeholder="Mô Tả" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Tổng</label>
+                                <input type="text" asp-for="tong" value="@tong" class="form-control" placeholder="Loại Tour" readonly>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

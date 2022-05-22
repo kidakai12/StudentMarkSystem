@@ -1,0 +1,84 @@
+﻿@page
+@model WebForm.Pages.Shared.ThongKeNhanVienModel
+@{
+    ViewData["Title"] = "Website Quản Lý Tour";
+    Layout = "_Layout";
+}
+@using BUS;
+@using DTO;
+@using Microsoft.AspNetCore.Http;
+@using Newtonsoft.Json; 
+@{ 
+    List<DoanDuLichDTO> doan = new List<DoanDuLichDTO>();
+    int count = 0;
+
+    string idnv = HttpContext.Session.GetString("chitietnhanvien");
+    List<PhanCongDTO> phancong = new PhanCongBUS().List().FindAll(x => x.Id_NV.Equals(idnv));
+    try
+    {
+        if (HttpContext.Session.GetString("thongkenhanvien") == "thanhcong")
+        {
+            string search1 = HttpContext.Session.GetString("ngay1");
+            string search2 = HttpContext.Session.GetString("ngay2");
+            doan = new ThongKeNhanVienBUS().list(phancong, search1, search2);
+        }
+    }
+    catch (Exception e) { }
+    if (doan.Count != 0)
+        count = doan.Count;
+}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Thống kê</h4>
+                        <form class="forms-sample" method="post">
+                            <input type="date" asp-for="search1" required class="form-control mb-2 mr-sm-2" style="margin-left:" placeholder="Thời gian bắt đầu">
+                            <input type="date" asp-for="search2"  required class="form-control mb-2 mr-sm-2" style="margin-left:" placeholder="Thời gian kết thúc">
+                            <input type="submit" asp-page-handler="tong" value="Tìm" class="btn btn-primary mr-2" />
+                            <div class="form-group">
+                                <label for="exampleInputName1">Mã nhân viên</label>
+                                <input type="text" value="@idnv" class="form-control" placeholder="Mã nhân viên" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Số đoàn tham gia</label>
+                                <input type="text" value="@count" class="form-control" placeholder="Số đoàn tham gia" readonly>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Mã Đoàn</th>
+                                        <th>Ngày khởi hành</th>
+                                        <th>Ngày kết thúc</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (DoanDuLichDTO item in doan)
+                                        {
+                                            <tr>
+                                                <td>@item.Id_Doan</td>
+                                                <td>@item.Ngaykhoihanh</td>
+                                                <td>@item.Ngayketthuc</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

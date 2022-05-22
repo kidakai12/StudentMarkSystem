@@ -1,0 +1,58 @@
+﻿@page
+@model WebForm.Pages.Shared.QuanLyChiTietDoan_ThemModel
+@{
+    ViewData["Title"] = "Website Quản Lý Tour";
+    Layout = "_Layout";
+}
+@using BUS;
+@using DTO;
+@using Microsoft.AspNetCore.Http;
+@using Newtonsoft.Json;   
+@{ 
+    string gia = HttpContext.Session.GetString("chitietdoan-giatour");
+    string iddoan = HttpContext.Session.GetString("chitietdoan");
+    List<KhachDTO> list = new KhachHangBUS().List();
+}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Thêm Chi Tiết Đoàn</h4>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã khách hàng</th>
+                                        <th>Họ tên</th>
+                                        <th>CMND</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (KhachDTO item in list)
+                                        {
+                                            <tr>
+                                                <td>@item.Id_Khach</td>
+                                                <td>@item.Hoten_Khach</td>
+                                                <td>@item.Cmnd_Khach</td>
+                                                <td>
+                                                    <form method="post">
+                                                        <input type="hidden" asp-for="idkhach"  value="@item.Id_Khach" />
+                                                        <input type="submit" asp-page-handler="add" value="Thêm" class="btn btn-danger" />
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,174 @@
+﻿@page
+@model WebForm.Pages.Shared.QuanLyDoanModel
+@{
+    ViewData["Title"] = "Website Quản Lý Tour";
+    Layout = "_Layout";
+
+}
+@using BUS;
+@using DTO;
+@using Microsoft.AspNetCore.Http;
+@{
+    List<DoanDuLichDTO> list_d = new List<DoanDuLichDTO>();
+    DoanDuLichBUS bus_d = new DoanDuLichBUS();
+    Tool tool = new Tool();
+    list_d = bus_d.List();
+    list_d = list_d.FindAll(x =>tool.comparetoday(x.Ngayketthuc) <= 0);
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Danh sách Đoàn Du Lịch</h4>
+                        @{
+                            try
+                            {
+                                <!---------------------Thông báo Xóa----------------------------------------------->
+                                if (HttpContext.Session.GetString("xoadoan") == "true")
+                                {
+                                    <h5 style="color:green">Xóa thành công</h5>
+                                    HttpContext.Session.Remove("xoadoan");
+                                }
+                                else if (HttpContext.Session.GetString("xoadoan") == "false")
+                                {
+                                    <h5 style="color:green">Đoàn này đã dc đăng ký bởi khách hàng</h5>
+                                    HttpContext.Session.Remove("xoadoan");
+                                }
+                                <!---------------------Thông báo Thêm----------------------------------------------->
+                                if (HttpContext.Session.GetString("themdoan") == "true")
+                                {
+                                    <h5 style="color: green">Thêm thành công</h5>
+                                    HttpContext.Session.Remove("themdoan");
+                                }
+                                <!---------------------Thông báo Sửa----------------------------------------------->
+                                if (HttpContext.Session.GetString("suadoan") == "true")
+                                {
+                                    <h5 style="color: green">Sửa thành công</h5>
+                                    HttpContext.Session.Remove("suadoan");
+                                }
+                                if (HttpContext.Session.GetString("xemchitietdoan") == "false")
+                                {
+                                    <h5 style="color: green">Tour của đoàn này chưa được định giá</h5>
+                                    HttpContext.Session.Remove("xemchitietdoan");
+                                }
+                            }
+                            catch (Exception e) { }
+                        }
+                        <a class="btn btn-primary mb-2" asp-page="/Shared/QuanLyDoan_Them">Thêm</a>
+                        <form class="form-inline" method="post">
+                            @{
+                                try
+                                {
+                                    string search = "";
+                                    switch (HttpContext.Session.GetString("searchtype"))
+                                    {
+                                        case "Id_Doan":
+                                            search = HttpContext.Session.GetString("search");
+                                            list_d = list_d.FindAll(x => x.Id_Doan.Contains(search));
+                                            HttpContext.Session.Remove("searchtype");
+                                            HttpContext.Session.Remove("search");
+                                            break;
+                                        case "Ten_Doan":
+                                            search = HttpContext.Session.GetString("search");
+                                            list_d = list_d.FindAll(x => x.Ten_Doan.Contains(search));
+                                            HttpContext.Session.Remove("searchtype");
+                                            HttpContext.Session.Remove("search");
+                                            break;
+                                        case "Id_Tour":
+                                            search = HttpContext.Session.GetString("search");
+                                            list_d = list_d.FindAll(x => x.Id_Tour.Contains(search));
+                                            HttpContext.Session.Remove("searchtype");
+                                            HttpContext.Session.Remove("search");
+                                            break;
+                                        case "ngay":
+                                            string dt1 = HttpContext.Session.GetString("dt1");
+                                            string dt2 = HttpContext.Session.GetString("dt2");
+                                            Tool tool = new Tool();
+                                            List<DoanDuLichDTO> listtmp = new List<DoanDuLichDTO>();
+                                            foreach (DoanDuLichDTO item in list_d)
+                                            {
+                                                if (tool.comparedate(item.Ngaykhoihanh, dt1) >= 0
+                                                    && tool.comparedate(item.Ngayketthuc, dt2) <= 0)
+                                                    listtmp.Add(item);
+                                            }
+                                            list_d = listtmp;
+                                            HttpContext.Session.Remove("searchtype");
+                                            HttpContext.Session.Remove("dt1");
+                                            HttpContext.Session.Remove("dt2");
+                                            break;
+                                        default:
+                                            break;
+                                    }
+
+                                }
+                                catch (Exception e) { }
+                            }
+                            <select class="form-control" asp-for="searchtype">
+                                <option value="Id_Doan">Mã Đoàn</option>
+                                <option value="Ten_Doan">Tên Đoàn</option>
+                                <option value="Id_Tour">Mã Tour</option>
+                            </select>
+                            <input type="text" asp-for="searchvalue" required class="form-control mb-2 mr-sm-2" style="margin-left:" placeholder="Tìm kiếm">
+                            <input type="submit" asp-page-handler="search" class="btn btn-warning" value="Tìm" style="margin-left:">
+                        </form>
+                        <form class="form-inline" method="post">
+                            <input type="date" asp-for="dt1" required class="form-control mb-2 mr-sm-2" style="margin-left:5px" placeholder="Thời gian bắt đầu">
+                            <p>Tới</p>
+                            <input type="date" asp-for="dt2" required class="form-control mb-2 mr-sm-2" style="margin-left:5px" placeholder="Thời gian kết thúc">
+                            <input type="submit" asp-page-handler="searchdate" value="Tìm" class="btn btn-primary mr-2" />
+                        </form>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Mã Đoàn</th>
+                                        <th>Tên Đoàn</th>
+                                        <th>Mã Tour</th>
+                                        <th>Ngày khởi hành</th>
+                                        <th>Ngày kết thúc</th>
+                                        <th>Doanh thu</th>
+                                        <th>Nội Dung</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (DoanDuLichDTO item in list_d)
+                                        {
+                                            <tr>
+                                                <td>@item.Id_Doan</td>
+                                                <td>@item.Ten_Doan</td>
+                                                <td>@item.Id_Tour</td>
+                                                <td>@item.Ngaykhoihanh</td>
+                                                <td>@item.Ngayketthuc</td>
+                                                <td>@item.Doanhthu.ToString("#,#") VNĐ</td>
+                                                <td>@item.Noidung</td>
+                                                <td>
+                                                    <form method="post">
+                                                        <input type="hidden" asp-for="doan.Id_Doan" value="@item.Id_Doan" />
+                                                        <input type="hidden" asp-for="doan.Ten_Doan" value="@item.Ten_Doan" />
+                                                        <input type="hidden" asp-for="doan.Id_Tour" value="@item.Id_Tour" />
+                                                        <input type="hidden" asp-for="doan.Ngaykhoihanh" value="@item.Ngaykhoihanh" />
+                                                        <input type="hidden" asp-for="doan.Ngayketthuc" value="@item.Ngayketthuc" />
+                                                        <input type="hidden" asp-for="doan.Doanhthu" value="@item.Doanhthu" />
+                                                        <input type="hidden" asp-for="doan.Noidung" value="@item.Noidung" />
+                                                        <input type="submit" asp-page-handler="edit" value="Sửa" class="btn btn-warning" />
+                                                        <input type="submit" asp-page-handler="delete" value="Xóa" class="btn btn-danger" />
+                                                        <input type="submit" asp-page-handler="detail" value="Chi tiết" class="btn btn-danger" />
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

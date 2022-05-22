@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    @using BUS;
+    @using DTO;
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Website Quản Lý Tour</title>
+
+    <link rel="stylesheet" href="@Url.Content("~/vendors/typicons.font/font/typicons.css")" media="screen" />
+    <link rel="stylesheet" href="@Url.Content("~/vendors/css/vendor.bundle.base.css")" media="screen" />
+    <link rel="stylesheet" href="@Url.Content("~/css/vertical-layout-light/style.css")" media="screen" />
+    <link rel="stylesheet" href="@Url.Content("~/css/hung_css.css")" media="screen" />
+    <link rel="shortcut icon" href="@Url.Content("~/images/favicon.png")" media="screen" />
+    <link rel="stylesheet" href="@Url.Content("~/vendors/select2/select2.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/vendors/select2-bootstrap-theme/select2-bootstrap.min.css")">
+ 
+</head>
+<body>
+    @{
+        List<TourDTO> list = new List<TourDTO>();
+        List<LoaiTourDTO> listloai = new List<LoaiTourDTO>();
+        TourBUS bus = new TourBUS();
+        LoaiTourBUS busloai = new LoaiTourBUS();
+        list = bus.List();
+        listloai = busloai.List();
+    }
+    <div class="container-scroller">
+        <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+            <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+                <a class="navbar-brand brand-logo-mini" href="index.html"><img src="~/images/logo-mini.svg" alt="logo" /></a>
+                <button class="navbar-toggler navbar-toggler align-self-center d-none d-lg-flex" type="button" data-toggle="minimize">
+                    <span class="typcn typcn-th-menu"></span>
+                </button>
+            </div>
+            <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+                <ul class="navbar-nav mr-lg-2">
+                   
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container-fluid page-body-wrapper">
+
+            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <div class="d-flex sidebar-profile">
+                            <div class="sidebar-profile-image">
+                                <img src="images/faces/face29.png" alt="image">
+                                <span class="sidebar-status-indicator"></span>
+                            </div>
+                            <div class="sidebar-profile-name">
+                                <p class="sidebar-name">
+                                    Website Quản Lý Tour
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/Shared/QuanLyTour">
+                            <i class="typcn typcn-document-text menu-icon"></i>
+                            <span class="menu-title">Quản Lý Tour</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                    </li>
+                    <hr />
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/Shared/QuanLyNhanVien">
+                            <i class="typcn typcn-globe-outline menu-icon"></i>
+                            <span class="menu-title">Quản Lý Nhân Viên</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                    </li>
+                    <hr />
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/Shared/QuanLyKhachHang">
+                            <i class="typcn typcn-document-text menu-icon"></i>
+                            <span class="menu-title">Quản Lý Khách Hàng</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                    </li>
+                    <hr />
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/Shared/QuanLyDoan">
+                            <i class="typcn typcn-globe-outline menu-icon"></i>
+                            <span class="menu-title">Quản Lý Đoàn</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                    </li>
+                    <hr />
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/Shared/QuanLyPhanCong">
+                            <i class="typcn typcn-globe-outline menu-icon"></i>
+                            <span class="menu-title">Quản Lý Phân Công</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                    </li>
+                    <hr />
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/Shared/QuanLyDiaDiem">
+                            <i class="typcn typcn-document-text menu-icon"></i>
+                            <span class="menu-title">Quản Lý Địa Điểm</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                    </li>
+                    <hr />
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/Shared/QuanLyGia">
+                            <i class="typcn typcn-globe-outline menu-icon"></i>
+                            <span class="menu-title">Quản Lý Giá</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Phần dùng riêng-->
+            @RenderBody()
+
+
+        </div>
+    </div>
+    <script src="@Url.Content("~/vendors/js/vendor.bundle.base.js")"></script>
+    <script src="@Url.Content("~/js/off-canvas.js")"></script>
+    <script src="@Url.Content("~/js/hoverable-collapse.js")"></script>
+    <script src="@Url.Content("~/js/template.js")"></script>
+    <script src="@Url.Content("~/js/settings.js")"></script>
+    <script src="@Url.Content("~/js/todolist.js")"></script>
+    <script src="@Url.Content("~/vendors/progressbar.js/progressbar.min.js")"></script>
+    <script src="@Url.Content("~/vendors/chart.js/Chart.min.js")"></script>
+    <script src="@Url.Content("~/js/dashboard.js")"></script>
+    <script src="@Url.Content("~/vendors/typeahead.js/typeahead.bundle.min.js")"></script>
+    <script src="@Url.Content("~/vendors/select2/select2.min.js")"></script>
+    <script src="@Url.Content("~/js/file-upload.js")"></script>
+    <script src="@Url.Content("~/js/typeahead.js")"></script>
+    <script src="@Url.Content("~/js/select2.js")"></script>
+</body>
+</html>

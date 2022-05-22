@@ -1,0 +1,122 @@
+﻿@page
+@model WebForm.Pages.Shared.QuanLyNhanVienModel
+@{
+    ViewData["Title"] = "Website Quản Lý Tour";
+    Layout = "_Layout";
+
+}
+@using BUS;
+@using DTO;
+@using Microsoft.AspNetCore.Http;
+@{
+    List<NhanVienDTO> list_nv = new List<NhanVienDTO>();
+    NhanVienBUS bus_nv = new NhanVienBUS();
+    list_nv = bus_nv.List();
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Danh sách Sinh Viên</h4>
+                        @{
+                            try
+                            {
+                                <!---------------------Thông báo Xóa----------------------------------------------->
+                                if (HttpContext.Session.GetString("xoanhanvien") == "true")
+                                {
+                                    <h5 style="color: green">Xóa thành công</h5>
+                                    HttpContext.Session.Remove("xoanhanvien");
+                                }
+                                <!---------------------Thông báo Thêm----------------------------------------------->
+                                if (HttpContext.Session.GetString("themnhanvien") == "true")
+                                {
+                                    <h5 style="color: green">Thêm thành công</h5>
+                                    HttpContext.Session.Remove("themnhanvien");
+                                }
+                                <!---------------------Thông báo Sửa----------------------------------------------->
+                                if (HttpContext.Session.GetString("suanhanvien") == "true")
+                                {
+                                    <h5 style="color: green">Sửa thành công</h5>
+                                    HttpContext.Session.Remove("suanhanvien");
+                                }
+                            }
+                            catch (Exception e) { }
+                        }
+                        <a class="btn btn-primary mb-2" asp-page="/Shared/QuanLyNhanVien_Them">Thêm</a>
+                        <form class="form-inline" method="post">
+                            @{
+                                string search = HttpContext.Session.GetString("search");
+                                try
+                                {
+                                    switch (HttpContext.Session.GetString("searchtype"))
+                                    {
+                                        case "Id_NV":
+                                            list_nv = list_nv.FindAll(x => x.Id_NV.Contains(search));
+                                            break;
+                                        case "Hoten_NV":
+                                            list_nv = list_nv.FindAll(x => x.Hoten_NV.Contains(search));
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                                catch (Exception e) { }
+                                HttpContext.Session.Remove("searchtype");
+                                HttpContext.Session.Remove("search");
+                            }
+                            <select class="form-control" asp-for="searchtype">
+                                <option value="Id_NV">Mã Nhân Viên</option>
+                                <option value="Hoten_NV">Họ tên</option>
+                            </select>
+                            <input type="text" asp-for="searchvalue" required class="form-control mb-2 mr-sm-2" style="margin-left:" placeholder="Tìm kiếm">
+                            <input type="submit" asp-page-handler="search" class="btn btn-warning" value="Tìm" style="margin-left:">
+                        </form>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Mã Nhân Viên</th>
+                                        <th>Họ tên</th>
+                                        <th>Email</th>
+                                        <th>Số điện thoại</th>
+                                        <th>Giới tính</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (NhanVienDTO item in list_nv)
+                                        {
+                                            <tr>
+                                                <td>@item.Id_NV</td>
+                                                <td>@item.Hoten_NV</td>
+                                                <td>@item.Email_NV</td>
+                                                <td>@item.Sdt_NV</td>
+                                                <td>@item.Gioitinh_NV</td>
+                                                <form asp- method="post">
+                                                    <td>
+                                                        <input type="hidden" asp-for="nhanvien.Id_NV" value="@item.Id_NV" />
+                                                        <input type="hidden" asp-for="nhanvien.Hoten_NV" value="@item.Hoten_NV" />
+                                                        <input type="hidden" asp-for="nhanvien.Email_NV" value="@item.Email_NV" />
+                                                        <input type="hidden" asp-for="nhanvien.Sdt_NV" value="@item.Sdt_NV" />
+                                                        <input type="hidden" asp-for="nhanvien.Gioitinh_NV" value="@item.Gioitinh_NV" />
+                                                        <input type="submit" asp-page-handler="edit" value="Sửa" class="btn btn-warning" />
+                                                        <input type="submit" asp-page-handler="delete" value="Xóa" class="btn btn-danger" />
+                                                        <input type="submit" asp-page-handler="detail" value="Chi tiết" class="btn btn-danger" />
+                                                    </td>
+                                                </form>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

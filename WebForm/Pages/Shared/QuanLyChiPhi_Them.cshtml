@@ -1,0 +1,42 @@
+﻿@page
+@model WebForm.Pages.Shared.QuanLyChiPhi_ThemModel
+@{
+}
+@{
+}
+@{
+    ViewData["Title"] = "Website Quản Lý Tour";
+    Layout = "_Layout";
+}
+@using Microsoft.AspNetCore.Http;
+@using Newtonsoft.Json;
+@using DTO;
+@using BUS;
+@{ 
+    string iddoan = HttpContext.Session.GetString("chitietdoan");
+} 
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Thêm Chi Phí</h4>
+                        <form class="forms-sample" method="post">
+                            <div class="form-group">
+                                <label for="exampleInputName1">Mã Loại</label>
+                                <select asp-for="chiphi.Id_LoaiChiPhi" class="form-control" asp-items="@(new SelectList(Model.loaichiphi,"Id_LoaiChiPhi", "Ten_LoaiChiPhi"))">
+                                </select><input type="hidden" asp-for="chiphi.Id_Doan" value="@iddoan">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">Giá</label>
+                                <input type="number" asp-for="chiphi.Gia" required class="form-control" placeholder="Nhập Giá">
+                            </div>
+                            <input type="submit" value="Thêm" class="btn btn-primary mr-2" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
